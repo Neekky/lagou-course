@@ -6,10 +6,10 @@ function getArea (r) {
   return Math.PI * r * r
 }
 
-// let getAreaWithMemory = _.memoize(getArea)
-// console.log(getAreaWithMemory(4))
-// console.log(getAreaWithMemory(4))
-// console.log(getAreaWithMemory(4))
+let getAreaWithMemory = _.memoize(getArea)
+console.log(getAreaWithMemory(4))
+console.log(getAreaWithMemory(4))
+console.log(getAreaWithMemory(4))
 
 
 // 模拟 memoize 方法的实现
@@ -23,7 +23,7 @@ function memoize (f) {
   }
 }
 
-let getAreaWithMemory = memoize(getArea)
-console.log(getAreaWithMemory(4))
-console.log(getAreaWithMemory(4))
-console.log(getAreaWithMemory(4))
+// let getAreaWithMemory = memoize(getArea)
+// console.log(getAreaWithMemory(4))
+// console.log(getAreaWithMemory(4))
+// console.log(getAreaWithMemory(4))
