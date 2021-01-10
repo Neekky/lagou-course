@@ -19,23 +19,23 @@ const toUpper = s => s.toUpperCase()
 // const compose = (...args) => value => args.reverse().reduce((acc, fn) => fn(acc), value)
 
 
-const compose = (...funcs) => funcs.reduce((acc, fn) => (...args) => acc(fn(...args)))
+// const compose = (...funcs) => funcs.reduce((acc, fn) => (...args) => acc(fn(...args)))
 
-const f = compose(toUpper, first, reverse)
+const f = compose(compose(toUpper, first), reverse)
 console.log(f(['one', 'two', 'three'], 1))
 
 // 写法一：redux中间件官方写法
-// function compose(...funcs) {
-//     if (funcs.length === 0) {
-//         // 如果没有要组合的函数，则返回的函数原封不动的返回参数
-//         return args => args; 
-//     } else if (funcs.length === 1) {
-//         // 要组合的函数只有一个
-//         return funcs[0];
-//     }
-//     // 无比简洁
-//     return funcs.reduce((acc, fn) => (...args) => acc(fn(...args)))
-// }
+function compose(...funcs) {
+    if (funcs.length === 0) {
+        // 如果没有要组合的函数，则返回的函数原封不动的返回参数
+        return args => args; 
+    } else if (funcs.length === 1) {
+        // 要组合的函数只有一个
+        return funcs[0];
+    }
+    // 无比简洁
+    return funcs.reduce((acc, fn) => (...args) => acc(fn(...args)))
+}
 
 // 写法二：可读性好一些的写法
 // function compose(...funcs) {
