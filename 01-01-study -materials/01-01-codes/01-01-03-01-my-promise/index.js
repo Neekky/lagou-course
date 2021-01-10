@@ -13,22 +13,72 @@
   7. then方法是可以被链式调用的, 后面then方法的回调函数拿到值的是上一个then方法的回调函数的返回值
 */
 
-const MyPromise = require('./myPromise');
+const MyPromise = require('./mPromise');
 
-function p1 () {
-  return new MyPromise(function (resolve, reject) {
-    setTimeout(function () {
-      resolve('p1')
-    }, 2000)
-  })
-}
-function p2 () {
-  return new MyPromise(function (resolve, reject) {
-    reject('失败')
-    // resolve('成功');  
-  })
-}
+// const p = new MyPromise((resolve, reject) => {
+//   // setTimeout(()=>{
+//   resolve('成功');
+//   // },1000) 
+//   // reject('失败');
+// });
+// p.then((res => {
+//   console.log(1)
+//   console.log(res);
+// }), err => {
+//   console.log(1)
+//   console.log(err);
+// })
+// p.then((res => {
+//   console.log(2)
+//   console.log(res);
+// }), err => {
+//   console.log(2)
+//   console.log(err);
+// })
 
-p2()
-  .then(value => console.log(value))
-  .catch(reason => console.log(reason))
+// p.then((res => {
+//   console.log(1)
+//   console.log(res);
+//   // return new MyPromise((resolve) => {
+//   //   setTimeout(() => {
+//   //     resolve('来吧')
+//   //   }, 1000)
+//   // });
+//   return p
+// })).then((res) => {
+//   console.log(res,'111')
+// })
+const p = new MyPromise((resolve, reject) => {
+  resolve('成功');
+});
+
+let p2 = p.then(res => {
+  console.log(res);
+  console.log(p2 === p2,'123')
+  return p2
+})
+
+p2.then(res => {
+  console.log(res);
+},err => {
+  console.log(err)
+})
+
+
+// function p1 () {
+//   return new MyPromise(function (resolve, reject) {
+//     setTimeout(function () {
+//       resolve('p1')
+//     }, 2000)
+//   })
+// }
+// function p2 () {
+//   return new MyPromise(function (resolve, reject) {
+//     reject('失败')
+//     // resolve('成功');  
+//   })
+// }
+
+// p2()
+//   .then(value => console.log(value))
+//   .catch(reason => console.log(reason))
