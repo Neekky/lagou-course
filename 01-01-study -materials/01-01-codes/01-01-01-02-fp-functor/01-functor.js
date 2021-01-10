@@ -30,13 +30,13 @@ class Container {
   }
 }
 
-// let r = Container.of(5)
-//           .map(x => x + 2)
-//           .map(x => x * x)
+let r = Container.of(5)
+          .map(x => x + 2)
+          .map(x => x * x)
 
-// console.log(r)
+console.log(r)
 
 
 // 演示 null undefined 的问题
-Container.of(null)
-  .map(x => x.toUpperCase())
+// Container.of(null)
+//   .map(x => x.toUpperCase())

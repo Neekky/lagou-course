@@ -19,5 +19,5 @@ class IO {
 
 // 调用
 let r = IO.of(process).map(p => p.execPath)
-// console.log(r)
-console.log(r._value())
+console.log(r)
+console.log(typeof process)
