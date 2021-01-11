@@ -48,22 +48,36 @@ const MyPromise = require('./mPromise');
 // })).then((res) => {
 //   console.log(res,'111')
 // })
-const p = new MyPromise((resolve, reject) => {
-  resolve('成功');
-});
+// const p = new MyPromise((resolve, reject) => {
+//   setTimeout(()=>{
+//     resolve('成功');
+//   },1000)
+// });
 
-let p2 = p.then(res => {
-  console.log(res);
-  console.log(p2 === p2,'123')
-  return p2
-})
+// 会报自调用错误
+// let p2 = p.then(res => {
+//   console.log(res);
+//   console.log(p2 === p2,'123')
+//   return p2
+// })
 
-p2.then(res => {
-  console.log(res);
-},err => {
-  console.log(err)
-})
+// p2.then(res => {
+//   console.log(res);
+// },err => {
+//   console.log(err)
+// })
 
+// 不会报自调用错误
+// let p2 = p.then(res => {
+//   console.log(res);
+//   console.log(p2 === p2,'123')
+//   return 111
+// }).then(res => {
+//   console.log(res);
+//   return 123321
+// },err => {
+//   console.log(err)
+// })
 
 // function p1 () {
 //   return new MyPromise(function (resolve, reject) {
@@ -82,3 +96,71 @@ p2.then(res => {
 // p2()
 //   .then(value => console.log(value))
 //   .catch(reason => console.log(reason))
+
+const p = new MyPromise((resolve, reject) => {
+  setTimeout(() => {
+    resolve('成功');
+    // reject('失败')
+  }, 100)
+});
+
+// p.then(res => {
+//   console.log(res);
+//   return new MyPromise(res => {
+//     setTimeout(()=>{
+//       res('延时返回')
+//     }, 1000)
+//   })
+// }, err => {
+//   console.log(err);
+//   setTimeout(()=>{
+//     return '延时返回'
+//   })
+// }).then(res => {
+//   return 222
+// }, err => {
+//   console.log(err, '我是失败的')
+// })
+
+// p.then(1).then(2).then((res) => {
+//   console.log(res,1)
+// }, (err) => {
+//   console.log(err, '失败')
+// })
+
+// 测试all方法
+
+const p1 = new MyPromise((res) => {
+  setTimeout(() => {
+    res(1)
+  }, 2000)
+})
+
+const p2 = new MyPromise((res, rej) => {
+  setTimeout(() => {
+    res(2)
+    return 111111
+  }, 1000)
+})
+
+// let p3 = MyPromise.all(['a', 'b', p1, p2, 'd'])
+// p3.then(res => {
+//   console.log(
+//     res
+//   )
+// })
+
+// MyPromise.resolve(p1).then(res => console.log(res, 'resolve'))
+// MyPromise.reject(
+//   new MyPromise((res ,rej) => { rej('sb') })
+//   // 11111
+// ).then(res => console.log(res, 'resolve'), err => console.log(err, 'reject'))
+
+p2.finally(() => {
+  console.log('finally')
+  return p1()
+}).then(res => {
+  console.log(res,'then之后的')
+}, err => {
+  console.log(err,'err')
+})
