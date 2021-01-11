@@ -17,26 +17,26 @@
 
 
 class Container {
-  static of (value) {
-    return new Container(value)
-  }
+    static of (value) {
+        return new Container(value)
+    }
 
-  constructor (value) {
-    this._value = value
-  }
+    constructor(value) {
+        this._value = value
+    }
 
-  map (fn) {
-    return Container.of(fn(this._value))
-  }
+    map(fn) {
+        return Container.of(fn(this._value))
+    }
 }
 
-// let r = Container.of(5)
-//           .map(x => x + 2)
-//           .map(x => x * x)
+let r = Container.of(5)
+    .map(x => x + 2)
+    .map(x => x * x)
 
-// console.log(r)
+console.log(r._value)
 
 
 // 演示 null undefined 的问题
 Container.of(null)
-  .map(x => x.toUpperCase())
+    .map(x => x.toUpperCase())
