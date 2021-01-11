@@ -14,6 +14,7 @@ function readFile (filename) {
 }
 
 readFile('package.json')
+  // 要使用为柯里化后的函数，把这给忘了，柯里化后返回的是占位了的函数呀
   .map(split('\n'))
   .map(find(x => x.includes('version')))
   .run()
