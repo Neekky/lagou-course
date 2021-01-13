@@ -132,13 +132,13 @@ const p = new MyPromise((resolve, reject) => {
 
 const p1 = new MyPromise((res) => {
   setTimeout(() => {
-    res(1)
+    res('2s')
   }, 2000)
 })
 
 const p2 = new MyPromise((res, rej) => {
   setTimeout(() => {
-    res(2)
+    rej(2)
     return 111111
   }, 1000)
 })
@@ -156,11 +156,15 @@ const p2 = new MyPromise((res, rej) => {
 //   // 11111
 // ).then(res => console.log(res, 'resolve'), err => console.log(err, 'reject'))
 
-p2.finally(() => {
-  console.log('finally')
-  return p1()
-}).then(res => {
-  console.log(res,'then之后的')
-}, err => {
-  console.log(err,'err')
-})
+// p2.finally(() => {
+//   console.log('finally')
+//   return p1
+// }).then(res => {
+//   console.log(res,'then之后的')
+// }, err => {
+//   console.log(err,'err')
+// })
+
+p2.then(res => {
+  console.log(res, '成功了');
+}).then().catch(err => console.log(err, '失败了'))

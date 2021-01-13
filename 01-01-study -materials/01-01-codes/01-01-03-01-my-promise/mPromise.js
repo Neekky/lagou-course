@@ -195,6 +195,11 @@ class MyPromise {
         })
     }
 
+    catch(failCallback) {
+        // 只注册失败回调
+        return this.then(undefined, failCallback)
+    }
+
 }
 /**
  * 判断 x 的值是普通值还是promise对象
