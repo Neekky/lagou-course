@@ -165,6 +165,19 @@ class MyPromise {
         })
     }
 
+    static race(array) {
+        return new Promise((resolve, reject) => {
+            for (let i = 0; i < array.length; i++) {
+                let current = array[i];
+                if (current instanceof MyPromise) {
+                    current.then(value => resolve(value), error => reject(error))
+                } else {
+                    resolve(array[i])
+                }
+            }
+        })
+    }
+
     static resolve(value) {
         if (value instanceof MyPromise) return value;
         return new MyPromise(resolve => resolve(value));

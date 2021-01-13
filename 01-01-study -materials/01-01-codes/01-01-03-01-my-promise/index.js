@@ -140,7 +140,7 @@ const p2 = new MyPromise((res, rej) => {
   setTimeout(() => {
     rej(2)
     return 111111
-  }, 1000)
+  }, 3000)
 })
 
 // let p3 = MyPromise.all(['a', 'b', p1, p2, 'd'])
@@ -165,6 +165,12 @@ const p2 = new MyPromise((res, rej) => {
 //   console.log(err,'err')
 // })
 
-p2.then(res => {
-  console.log(res, '成功了');
-}).then().catch(err => console.log(err, '失败了'))
+// p2.then(res => {
+//   console.log(res, '成功了');
+// }).then().catch(err => console.log(err, '失败了'))
+
+MyPromise.race([p1,p2]).then(res => {
+  console.log(res,'111111');
+}).catch(err => {
+  console.log(err,'失败了');
+})
