@@ -24,7 +24,7 @@ const obj = {
       next: function () {
         const result = {
           value: self.store[index],
-          done: index >= self.store.length
+          done: index >= self.store.length,
         }
         index++
         return result

@@ -22,10 +22,12 @@ const hello: Post = {
 // ----------------------------------
 
 interface Cache {
-  [prop: string]: string
+  [prop: string]: string;
+  abc: string;
 }
 
 const cache: Cache = {}
 
 cache.foo = 'value1'
 cache.bar = 'value2'
+cache.abc = '111'
