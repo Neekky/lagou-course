@@ -21,13 +21,13 @@
 
 // Object.getOwnPropertyDescriptors ----------------------------------------
 
-// const p1 = {
-//   firstName: 'Lei',
-//   lastName: 'Wang',
-//   get fullName () {
-//     return this.firstName + ' ' + this.lastName
-//   }
-// }
+const p1 = {
+  firstName: 'Lei',
+  lastName: 'Wang',
+  get fullName () {
+    return this.firstName + ' ' + this.lastName
+  }
+}
 
 // // console.log(p1.fullName)
 
