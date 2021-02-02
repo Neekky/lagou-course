@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>时间线监控内存变化</title>
+</head>
+<body>
+    <button id="btn">add</button>
+
+    <script>
+        const oBtn = document.getElementById('btn');
+        const arrList = [];
+
+        function test() {
+            for (let i = 0; i < 1000000; i++) {
+                const p = document.createElement("p");
+                const t = document.createTextNode("CLICK ME");
+                p.appendChild(t);
+                document.body.append(p);              
+            }
+            arrList.push(new Array(1000000).join('xx'))
+        }
+        oBtn.onclick = function () {
+            test(); 
+        }
+
+    </script>
+</body>
+</html>

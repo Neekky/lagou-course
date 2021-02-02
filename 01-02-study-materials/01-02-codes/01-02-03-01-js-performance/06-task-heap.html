@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>堆快照监控内存变化</title>
+</head>
+<body>
+    <button id="btn">add</button>
+
+    <script>
+        const oBtn = document.getElementById('btn');
+        let arrList;
+
+        function test() {
+            let ul = document.createElement("ul");
+            for (let i = 0; i < 10; i++) {
+                let li = document.createElement("li");   
+                ul.appendChild(li); 
+            }
+            arrList = ul;
+        }
+        oBtn.onclick = function () {
+            test(); 
+        }
+
+    </script>
+</body>
+</html>
