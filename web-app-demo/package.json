@@ -1,0 +1,18 @@
+{
+  "name": "web-app-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "sass scss/main.scss css/style.css --watch",
+    "pretest": "yarn build",
+    "test": "browser-sync .",
+    "serve": "browser-sync . --files \"css/*.css\"",
+    "start": "run-p build serve"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "browser-sync": "^2.26.14",
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.32.8"
+  }
+}
