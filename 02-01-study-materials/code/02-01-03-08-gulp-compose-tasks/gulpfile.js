@@ -11,14 +11,14 @@ const task2 = done => {
   setTimeout(() => {
     console.log('task2 working~')
     done()
-  }, 1000)  
+  }, 1000)
 }
 
 const task3 = done => {
   setTimeout(() => {
     console.log('task3 working~')
     done()
-  }, 1000)  
+  }, 1000)
 }
 
 // 让多个任务按照顺序依次执行
