@@ -1,12 +1,16 @@
 const {
   src,
   dest,
-  parallel
+  parallel,
+  series
 } = require('gulp');
-const sass = require('gulp-sass');
-const babel = require('gulp-babel');
-const swig = require('gulp-swig');
-const imagemin = require('gulp-imagemin');
+
+const loadPlugins = require('gulp-load-plugins');
+const plugins = loadPlugins();
+const browserSync = require('browser-sync');
+
+const del = require('del');
+const bs = browserSync.create();
 
 const data = {
   menus: [{
@@ -47,11 +51,15 @@ const data = {
   date: new Date()
 }
 
+const clean = () => {
+  return del(['dist'])
+}
+
 const style = () => {
   return src('src/assets/styles/*.scss', {
     base: 'src'
   })
-    .pipe(sass({
+    .pipe(plugins.sass({
       outputStyle: 'expanded'
     }))
     .pipe(dest('dist'))
@@ -61,7 +69,7 @@ const script = () => {
   return src('src/assets/scripts/*.js', {
     base: 'src'
   })
-    .pipe(babel({
+    .pipe(plugins.babel({
       presets: ['@babel/preset-env']
     }))
     .pipe(dest('dist'))
@@ -71,7 +79,7 @@ const page = () => {
   return src('src/*.html', {
     base: 'src'
   })
-    .pipe(swig({
+    .pipe(plugins.swig({
       data
     }))
     .pipe(dest('dist'))
@@ -81,7 +89,7 @@ const image = () => {
   return src('src/assets/images/**', {
     base: 'src'
   })
-    .pipe(imagemin())
+    .pipe(plugins.imagemin())
     .pipe(dest('dist'))
 }
 
@@ -89,7 +97,7 @@ const font = () => {
   return src('src/assets/fonts/**', {
     base: 'src'
   })
-    .pipe(imagemin())
+    .pipe(plugins.imagemin())
     .pipe(dest('dist'))
 }
 
@@ -100,7 +108,10 @@ const extra = () => {
 
 const compile = parallel(style, script, page, image, font);
 
+const build = series(clean, parallel(compile, extra));
+
 module.exports = {
   compile,
-  extra
+  build,
+  clean
 }
