@@ -2,7 +2,8 @@ const {
   src,
   dest,
   parallel,
-  series
+  series,
+  watch
 } = require('gulp');
 
 const loadPlugins = require('gulp-load-plugins');
@@ -80,7 +81,8 @@ const page = () => {
     base: 'src'
   })
     .pipe(plugins.swig({
-      data
+      data,
+      defaults: { cache: false }
     }))
     .pipe(dest('dist'))
 }
@@ -106,12 +108,47 @@ const extra = () => {
     .pipe(dest('dist'))
 }
 
-const compile = parallel(style, script, page, image, font);
+const serve = () => {
+  watch('src/assets/styles/*.scss', style)
+  watch('src/assets/scripts/*.js', script)
+  watch('src/*.html', page)
+  // watch('src/assets/images/**', image)
+  // watch('src/assets/fonts/**', font)
+  // watch('public/**', extra)
+  
+  watch([
+    'src/assets/images/**',
+    'src/assets/fonts/**',
+    'public/**'
+  ], bs.reload)
 
-const build = series(clean, parallel(compile, extra));
+  bs.init({
+    notify: false,
+    port: 8081,
+    open: true,
+    files: 'dist/**',
+    server: {
+      baseDir: ['dist', 'src', 'public'],
+      // routes可以手动配置请求优先路径
+      routes: {
+        "/node_modules": "node_modules"
+      }
+    }
+  })
+}
+
+
+
+const compile = parallel(style, script, page,);
+
+const build = series(clean, parallel(compile, image, font, extra));
+
+const develop = series(compile, serve)
 
 module.exports = {
+  develop,
   compile,
   build,
-  clean
+  clean,
+  serve
 }
