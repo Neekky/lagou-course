@@ -1,0 +1,18 @@
+{
+  "name": "zc-pages-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "zc-pages build",
+    "develop": "zc-pages develop",
+    "clean": "zc-pages clean"
+  },
+  "devDependencies": {
+    "zc-pages": "^0.1.1"
+  },
+  "dependencies": {
+    "bootstrap": "^4.6.0",
+    "jquery": "^3.6.0"
+  }
+}
