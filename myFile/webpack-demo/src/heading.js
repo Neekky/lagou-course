@@ -1,3 +1,6 @@
+import "./main.css";
+import icon from "./img/icon.png";
+
 export default () => {
   const element = document.createElement('h2')
 
@@ -8,3 +11,8 @@ export default () => {
 
   return element
 }
+
+const img = new Image()
+img.src = icon
+
+document.body.append(img)
