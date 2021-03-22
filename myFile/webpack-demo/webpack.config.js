@@ -12,20 +12,32 @@ module.exports = {
     // publicPath: 'src/img/'
   },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
+    contentBase: path.join(__dirname, 'output'),
     compress: true,
     port: 9000,
+    proxy: {
+      '/api': {
+        target: "https://api.github.com",
+        pathRewrite: {
+          '^/api': ''
+        },
+        changeOrigin: true
+      }
+    }
   },
   module: {
     rules: [
       {
-        test: /.js$/,
-        use: [{
-          loader: "babel-loader",
+        test: /\.m?js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
           options: {
-            presets: ["@babel/preset-env"]
+            presets: [
+              ['@babel/preset-env', { targets: "defaults" }]
+            ]
           }
-        }]
+        }
       },
       {
         test: /.css$/,
