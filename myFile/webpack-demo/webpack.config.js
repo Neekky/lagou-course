@@ -1,4 +1,7 @@
 const path = require('path')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   mode: "none",
@@ -7,6 +10,11 @@ module.exports = {
     filename: 'bundle.js',
     path: path.join(__dirname, 'output'),
     // publicPath: 'src/img/'
+  },
+  devServer: {
+    contentBase: path.join(__dirname, 'dist'),
+    compress: true,
+    port: 9000,
   },
   module: {
     rules: [
@@ -28,5 +36,10 @@ module.exports = {
         use: ['url-loader']
       }
     ]
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new HtmlWebpackPlugin(),
+    // new CopyWebpackPlugin()
+  ]
 }
