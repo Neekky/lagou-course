@@ -2,6 +2,7 @@ const path = require('path')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const webpack = require('webpack');
 
 module.exports = {
   mode: "none",
@@ -12,6 +13,7 @@ module.exports = {
     // publicPath: 'src/img/'
   },
   devServer: {
+    hot: true,
     contentBase: path.join(__dirname, 'output'),
     compress: true,
     port: 9000,
@@ -25,6 +27,7 @@ module.exports = {
       }
     }
   },
+  devtool: "source-map",
   module: {
     rules: [
       {
@@ -53,5 +56,6 @@ module.exports = {
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin(),
     // new CopyWebpackPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ]
 }
