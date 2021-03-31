@@ -1,5 +1,6 @@
-import createHeading from './heading.js'
-import './main.css'
+import createHeading from './heading.js';
+import './main.css';
+import './main';
 
 const heading = createHeading()
 

@@ -13,7 +13,8 @@ module.exports = {
     // publicPath: 'src/img/'
   },
   devServer: {
-    hot: true,
+    // hot: true,
+    hotOnly: true,
     contentBase: path.join(__dirname, 'output'),
     compress: true,
     port: 9000,
