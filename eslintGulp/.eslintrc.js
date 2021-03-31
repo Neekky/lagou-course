@@ -1,12 +1,13 @@
 module.exports = {
   env: {
-    browser: true
+    browser: true,
+    es6: false
   },
   extends: [
     'standard'
   ],
   parserOptions: {
-    ecmaVersion: 12
+    ecmaVersion: 10
   },
   rules: {
   }

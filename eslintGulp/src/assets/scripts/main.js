@@ -8,3 +8,9 @@ $(($) => {
     return false
   })
 })
+
+const aaa = 1
+
+const a = () => {
+  
+}

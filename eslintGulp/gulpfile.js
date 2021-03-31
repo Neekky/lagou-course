@@ -63,6 +63,8 @@ const style = () => {
 const script = () => {
   return src('src/assets/scripts/*.js', { base: 'src' })
     .pipe(plugins.eslint())
+    .pipe(plugins.eslint.format())
+    .pipe(plugins.eslint.failAfterError())
     .pipe(plugins.babel({ presets: ['@babel/preset-env'] }))
     .pipe(dest('temp'))
     .pipe(bs.reload({ stream: true }))
@@ -151,5 +153,6 @@ const develop = series(compile, serve)
 module.exports = {
   clean,
   build,
-  develop
+  develop,
+  script
 }
