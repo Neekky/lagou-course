@@ -1,5 +1,4 @@
-(function () {
-  'use strict';
+define(['require', './logger-98b2bd18'], function (require, logger) { 'use strict';
 
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
@@ -18010,33 +18009,30 @@
     lodash.prototype[symIterator] = seq.toIterator;
   }
 
-  const log = msg => {
-    console.log('---------- INFO ----------');
-    console.log(msg);
-    console.log('--------------------------');
-  };
-
   var messages = {
     hi: 'Hey Guys, I am zce~'
   };
 
-  var name = "rollup";
-  var version = "1.0.0";
-
-  var cjsModule = {
-    foo: 'bar'
-  };
-
   // 导入模块成员
+  // import {
+  //     name,
+  //     version
+  // } from "../package.json";
+
+  // import cjs from "./cjs-module";
 
   // 使用模块成员
   const msg = messages.hi;
 
-  log(msg);
+  logger.log(msg);
 
-  console.log(name);
-  console.log(version);
+  // console.log(name);
+  // console.log(version);
   console.log(lodash.camelCase('hello world'));
-  console.log(cjsModule);
+  // console.log(cjs);
 
-}());
+  new Promise(function (resolve, reject) { require(['./logger-98b2bd18'], resolve, reject) }).then(({log}) => {
+      log("1231232131");
+  });
+
+});
