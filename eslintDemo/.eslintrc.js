@@ -13,6 +13,6 @@ module.exports = {
     'no-alert': 'error'
   },
   globals: {
-    'jQuery': 'readonly'
+    jQuery: 'readonly'
   }
 }

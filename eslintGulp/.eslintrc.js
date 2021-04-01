@@ -10,5 +10,10 @@ module.exports = {
     ecmaVersion: 10
   },
   rules: {
+  },
+  settings: {
+    react: {
+      version: 'detect'
+    }
   }
 }
