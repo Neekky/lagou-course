@@ -1,0 +1,14 @@
+{
+  "name": "huskyDemo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "husky": "^6.0.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run test"
+    }
+  }
+}
