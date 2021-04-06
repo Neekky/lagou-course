@@ -1,0 +1,15 @@
+.abc {
+  background-color: #fff;
+  border-radius: 20px;
+  font-size: 16px;
+  width: 100px;
+  height: 200px;
+}
+
+.bb {
+  border-radius: 20px;
+  font-size: 16px;
+  width: 100px;
+  height: 200px;
+  color: #ddd;
+}

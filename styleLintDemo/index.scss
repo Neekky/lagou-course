@@ -1,0 +1,18 @@
+$nav-color: #f90;
+
+nav {
+  $width: 100px;
+
+  color: $nav-color;
+  width: $width;
+}
+
+$highlight-color: #f90;
+
+.selected {
+  border: 1px solid $highlight-color;
+}
+
+.selec {
+  font-size: 20px;
+}
