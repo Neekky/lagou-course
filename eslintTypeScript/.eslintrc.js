@@ -1,19 +1,18 @@
 module.exports = {
   env: {
     browser: true,
-    es6: false
+    es2021: true
   },
   extends: [
     'standard'
   ],
+  parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 10
+    ecmaVersion: 12
   },
+  plugins: [
+    '@typescript-eslint'
+  ],
   rules: {
-  },
-  settings: {
-    react: {
-      version: 'detect'
-    }
   }
 }
