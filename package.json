@@ -1,0 +1,11 @@
+{
+  "name": "lagou-course",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "bin": {
+    "bcli": "bin/cli.js"
+  },
+  "repository": "https://github.com/Neekky/lagou-course.git",
+  "author": "<475383200@qq.com>",
+  "license": "MIT"
+}
