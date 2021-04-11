@@ -7,5 +7,12 @@
   },
   "repository": "https://github.com/Neekky/lagou-course.git",
   "author": "<475383200@qq.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^4.1.0",
+    "commander": "^7.2.0",
+    "inquirer": "^8.0.0",
+    "ora": "^5.4.0"
+  }
 }
