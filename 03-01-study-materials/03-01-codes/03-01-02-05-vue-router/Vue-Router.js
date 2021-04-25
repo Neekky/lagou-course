@@ -3,9 +3,9 @@
 console.dir(Vue)
 let _Vue = null
 class VueRouter {
-    static install(Vue){
+    static install(Vue) {
         //1 判断当前插件是否被安装
-        if(VueRouter.install.installed){
+        if (VueRouter.install.installed) {
             return;
         }
         VueRouter.install.installed = true
@@ -14,73 +14,74 @@ class VueRouter {
         //3 把创建Vue的实例传入的router对象注入到Vue实例
         // _Vue.prototype.$router = this.$options.router
         _Vue.mixin({
-            beforeCreate(){
-                if(this.$options.router){
+            beforeCreate() {
+                // 此处只执行一次，如果是组件则不执行，是Vue实例则执行
+                if (this.$options.router) {
+                    console.log(this.$options.router, "方法里面的this")
                     _Vue.prototype.$router = this.$options.router
-                    
                 }
-               
+
             }
         })
     }
-    constructor(options){
+    constructor(options) {
         this.options = options
         this.routeMap = {}
         // observable
         this.data = _Vue.observable({
-            current:"/"
+            current: "/"
         })
         this.init()
 
     }
-    init(){
+    init() {
         this.createRouteMap()
         this.initComponent(_Vue)
         this.initEvent()
     }
-    createRouteMap(){
+    createRouteMap() {
         //遍历所有的路由规则 吧路由规则解析成键值对的形式存储到routeMap中
         this.options.routes.forEach(route => {
             this.routeMap[route.path] = route.component
         });
     }
-    initComponent(Vue){
-        Vue.component("router-link",{
-            props:{
-                to:String
+    initComponent(Vue) {
+        Vue.component("router-link", {
+            props: {
+                to: String
             },
-            render(h){
-                return h("a",{
-                    attrs:{
-                        href:this.to
+            render(h) {
+                return h("a", {
+                    attrs: {
+                        href: this.to
                     },
-                    on:{
-                        click:this.clickhander
+                    on: {
+                        click: this.clickhander
                     }
-                },[this.$slots.default])
+                }, [this.$slots.default])
             },
-            methods:{
-                clickhander(e){
-                    history.pushState({},"",this.to)
-                    this.$router.data.current=this.to
+            methods: {
+                clickhander(e) {
+                    history.pushState({}, "", this.to)
+                    this.$router.data.current = this.to
                     e.preventDefault()
                 }
             }
             // template:"<a :href='to'><slot></slot><>"
         })
         const self = this
-        Vue.component("router-view",{
-            render(h){
+        Vue.component("router-view", {
+            render(h) {
                 // self.data.current
-                const cm=self.routeMap[self.data.current]
+                const cm = self.routeMap[self.data.current]
                 return h(cm)
             }
         })
-        
+
     }
-    initEvent(){
+    initEvent() {
         //
-        window.addEventListener("popstate",()=>{
+        window.addEventListener("popstate", () => {
             this.data.current = window.location.pathname
         })
     }
