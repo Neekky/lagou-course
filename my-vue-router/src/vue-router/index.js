@@ -62,16 +62,16 @@ export default class VueRouter {
       props: {
         to: String
       },
-      //   render (h) {
-      //     return h('a', {
-      //       attrs: {
-      //         href: this.to
-      //       },
-      //       on: {
-      //         click: this.clickhander
-      //       }
-      //     }, [this.$slots.default])
-      //   },
+        render (h) {
+          return h('a', {
+            attrs: {
+              href: this.to
+            },
+            on: {
+              click: this.clickhander
+            }
+          }, [this.$slots.default])
+        },
       methods: {
         clickhander (e) {
           history.pushState({}, '', this.to)
@@ -79,7 +79,7 @@ export default class VueRouter {
           e.preventDefault()
         }
       },
-      template: "<a :href='to' @click={{this.clickhander}}><slot></slot><>"
+      // template: "<a :href='to' @click={{this.clickhander}}><slot></slot><>"
     })
   }
 }
