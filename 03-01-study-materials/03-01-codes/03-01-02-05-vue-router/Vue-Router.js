@@ -32,7 +32,6 @@ class VueRouter {
             current: "/"
         })
         this.init()
-
     }
     init() {
         this.createRouteMap()
