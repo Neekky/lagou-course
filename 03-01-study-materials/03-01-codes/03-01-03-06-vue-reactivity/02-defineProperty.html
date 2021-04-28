@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="cn">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>defineProperty</title>
 </head>
+
 <body>
   <div id="app">
     hello
@@ -26,12 +28,12 @@
       // 可配置（可以使用 delete 删除，可以通过 defineProperty 重新定义）
       configurable: true,
       // 当获取值的时候执行
-      get () {
+      get() {
         console.log('get: ', data.msg)
         return data.msg
       },
       // 当设置值的时候执行
-      set (newValue) {
+      set(newValue) {
         console.log('set: ', newValue)
         if (newValue === data.msg) {
           return
@@ -43,8 +45,12 @@
     })
 
     // 测试
-    vm.msg = 'Hello World'
+    setTimeout(() => {
+      vm.msg = 'Hello World'
+      console.log(vm.msg)
+    }, 1000)
     console.log(vm.msg)
   </script>
 </body>
+
 </html>
