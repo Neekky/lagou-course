@@ -16,6 +16,7 @@ class Observer {
 
     // 为什么defineReactive要传第三个参数--val
     defineReactive(obj, key, val) {
+        // 如果val是对象，把val内部的属性转换成响应式数据
         this.walk(val);
         Object.defineProperty(obj, key, {
             enumerable: true,
@@ -29,6 +30,7 @@ class Observer {
                 console.log("在Observer中被set设置")
                 if (newVal === val) return
                 val = newVal
+                this.walk(newVal)
                 // 发送通知
             }
         })

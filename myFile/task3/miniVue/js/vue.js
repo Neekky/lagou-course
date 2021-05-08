@@ -12,6 +12,7 @@ class Vue {
         new Observer(this.$data)
         
         // 4. 调用compiler对象，解析指令和差值表达式
+        new Compile(this)
     }
 
     // 使Vue代理data中的数据
