@@ -23,18 +23,23 @@ class Compile {
                 this.compile(node)
             }
         })
-
-
     }
 
     // 编译元素节点，处理指令
     compileElement(node) {
-        console.log(node, "元素节点")
+        console.dir(node, "元素节点")
     }
 
     // 编译文本节点，处理差值表达式
     compileText(node) {
-        console.log(node, "文本节点")
+        console.dir(node, "文本节点")
+        const reg = /\{\{(.+?)\}\}/;
+        const value = node.textContent;
+        if(reg.test(value)){
+            const key = RegExp.$1.trim();
+            node.textContent = value.replace(reg, this.vm[key])
+        }
+
     }
 
     // 判断元素属性是否是指令

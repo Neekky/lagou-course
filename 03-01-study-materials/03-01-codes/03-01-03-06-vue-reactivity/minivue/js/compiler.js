@@ -70,7 +70,7 @@ class Compiler {
     let value = node.textContent
     if (reg.test(value)) {
       let key = RegExp.$1.trim()
-      node.textContent = value.replace(reg, this.vm[key])
+      node.textContent = value.replace(reg, this.vm.$data[key])
 
       // 创建watcher对象，当数据改变更新视图
       new Watcher(this.vm, key, (newValue) => {
