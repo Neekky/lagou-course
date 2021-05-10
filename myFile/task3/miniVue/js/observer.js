@@ -18,11 +18,14 @@ class Observer {
     defineReactive(obj, key, val) {
         // 如果val是对象，把val内部的属性转换成响应式数据
         this.walk(val);
+        // 创建dep对象，收集依赖
+        const dep = new Dep();
         Object.defineProperty(obj, key, {
             enumerable: true,
             configurable: true,
             get: () => {
                 console.log("在Observer中被get获取")
+                Dep.target && dep.addSub(Dep.target)
                 // 这里为什么不返回obj[key]
                 return val;
             },
@@ -32,6 +35,7 @@ class Observer {
                 val = newVal
                 this.walk(newVal)
                 // 发送通知
+                dep.notify();
             }
         })
     }
