@@ -24,16 +24,15 @@ class Observer {
             enumerable: true,
             configurable: true,
             get: () => {
-                console.log("在Observer中被get获取")
                 Dep.target && dep.addSub(Dep.target)
                 // 这里为什么不返回obj[key]
                 return val;
             },
             set: (newVal) => {
-                console.log("在Observer中被set设置")
                 if (newVal === val) return
                 val = newVal
                 this.walk(newVal)
+                console.log(dep, 'dep闭包')
                 // 发送通知
                 dep.notify();
             }

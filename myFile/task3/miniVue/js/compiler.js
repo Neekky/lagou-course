@@ -26,7 +26,6 @@ class Compile {
 
     // 编译元素节点，处理指令
     compileElement(node) {
-        console.log(node.attributes, "元素节点");
         // 遍历所有的属性节点
         Array.from(node.attributes).forEach(attr => {
             // 判断该属性是否是指令

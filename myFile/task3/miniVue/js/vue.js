@@ -24,11 +24,9 @@ class Vue {
                 enumerable: true,
                 configurable: true,
                 get() {
-                    console.log("在Vue类中被get获取")
                     return data[key]
                 },
                 set(newValue) {
-                    console.log("在Vue类中被set设置")
                     if (newValue === data[key]) {
                         return
                     }
