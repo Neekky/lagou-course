@@ -32,7 +32,6 @@ class Observer {
                 if (newVal === val) return
                 val = newVal
                 this.walk(newVal)
-                console.log(dep, 'dep闭包')
                 // 发送通知
                 dep.notify();
             }
