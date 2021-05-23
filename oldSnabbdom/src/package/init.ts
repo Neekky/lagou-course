@@ -131,20 +131,36 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         // 判断有无id和class，来设置id和类样式
       if (hash < dot) elm.setAttribute('id', sel.slice(hash + 1, dot))
       if (dotIdx > 0) elm.setAttribute('class', sel.slice(dot + 1).replace(/\./g, ' '))
+
+      /**
+       * dom元素创建完毕，遍历触发所有create钩子函数
+       */
       for (i = 0; i < cbs.create.length; ++i) cbs.create[i](emptyNode, vnode)
+
+      /**
+       * 判断是否有子节点，如果有则创建对应的子节点vnode，并追加到DOM树上。
+       * 这里children和text是互斥的。
+       */
       if (is.array(children)) {
         for (i = 0; i < children.length; ++i) {
           const ch = children[i]
           if (ch != null) {
+            // 子节点不为null，则递归调用createElm，追加到elm中
             api.appendChild(elm, createElm(ch as VNode, insertedVnodeQueue))
           }
         }
       } else if (is.primitive(vnode.text)) {
+        // 没有children，则直接创建文本节点，追加到elm中
         api.appendChild(elm, api.createTextNode(vnode.text))
       }
+      /**
+       * 获取用户传入的钩子函数，如果有传入，则调用用户传的create钩子函数
+       */
       const hook = vnode.data!.hook
       if (isDef(hook)) {
         hook.create?.(emptyNode, vnode)
+        // 如果有insert钩子函数，则将vnode注入到insertedVnodeQueue中，
+        // 等dom元素插入到DOM树中后，在执行insert钩子函数
         if (hook.insert) {
           insertedVnodeQueue.push(vnode)
         }
