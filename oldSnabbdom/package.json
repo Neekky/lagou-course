@@ -126,12 +126,6 @@
     }
   },
   "homepage": "https://github.com/snabbdom/snabbdom#readme",
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint --config commitlint.config.json -E HUSKY_GIT_PARAMS",
-      "pre-commit": "run-s docs check-clean test"
-    }
-  },
   "files": [
     "/build/package/h.d.ts",
     "/build/package/h.js",

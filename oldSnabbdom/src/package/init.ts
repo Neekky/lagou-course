@@ -85,32 +85,50 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
   }
 
   function createElm (vnode: VNode, insertedVnodeQueue: VNodeQueue): Node {
+    // 执行用户设置的 init 钩子函数
     let i: any
     let data = vnode.data
     if (data !== undefined) {
       const init = data.hook?.init
       if (isDef(init)) {
+        // init：创建真实DOM之前，让用户可以对VNode做一次修改
         init(vnode)
         data = vnode.data
       }
     }
+
+
     const children = vnode.children
     const sel = vnode.sel
+    // 把VNode转换成真实DOM对象（没有渲染到页面），而只是把它挂载到VNode的elm属性上
     if (sel === '!') {
+      // 创建注释节点
       if (isUndef(vnode.text)) {
         vnode.text = ''
       }
       vnode.elm = api.createComment(vnode.text!)
     } else if (sel !== undefined) {
+      // 创建对应的DOM元素
+      // 解析选择器
       // Parse selector
+
+      /**
+       * 这里是解析标签名，获取#和.的位置，从sel中获取标签名
+       */
       const hashIdx = sel.indexOf('#')
       const dotIdx = sel.indexOf('.', hashIdx)
       const hash = hashIdx > 0 ? hashIdx : sel.length
       const dot = dotIdx > 0 ? dotIdx : sel.length
       const tag = hashIdx !== -1 || dotIdx !== -1 ? sel.slice(0, Math.min(hash, dot)) : sel
+
+      /**
+       * 解析完成后，开始创建对应的dom元素，并存储到vnode的elm属性中
+       * ns是命名空间的意思
+       */
       const elm = vnode.elm = isDef(data) && isDef(i = data.ns)
-        ? api.createElementNS(i, tag)
-        : api.createElement(tag)
+        ? api.createElementNS(i, tag) // 带命名空间的，一般是创建svg
+        : api.createElement(tag) // 直接创建
+        // 判断有无id和class，来设置id和类样式
       if (hash < dot) elm.setAttribute('id', sel.slice(hash + 1, dot))
       if (dotIdx > 0) elm.setAttribute('class', sel.slice(dot + 1).replace(/\./g, ' '))
       for (i = 0; i < cbs.create.length; ++i) cbs.create[i](emptyNode, vnode)
@@ -132,8 +150,10 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         }
       }
     } else {
+      // 选择器为空，创建文本节点
       vnode.elm = api.createTextNode(vnode.text!)
     }
+    // 返回新创建的DOM对象
     return vnode.elm
   }
 
@@ -320,7 +340,6 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
       patchVnode(oldVnode, vnode, insertedVnodeQueue)
     } else {
       // 不是相同元素
-
 
       elm = oldVnode.elm! // 标识一定是有值
       parent = api.parentNode(elm) as Node // 获取父元素，供后面创建的新VNode挂载到这个父元素下
