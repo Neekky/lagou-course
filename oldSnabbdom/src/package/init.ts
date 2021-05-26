@@ -205,6 +205,13 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
     }
   }
 
+  /**
+   * 
+   * @param parentElm 要删除的元素所在父元素
+   * @param vnodes array，存放要删除的dom元素对应的vnode
+   * @param startIdx 数组中要删除节点的开始位置
+   * @param endIdx 数组中要删除节点的结束位置
+   */
   function removeVnodes (parentElm: Node,
     vnodes: VNode[],
     startIdx: number,
@@ -215,8 +222,9 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
       const ch = vnodes[startIdx]
       if (ch != null) {
         if (isDef(ch.sel)) {
-          invokeDestroyHook(ch)
-          listeners = cbs.remove.length + 1
+          // 元素节点删除操作
+          invokeDestroyHook(ch) // 触发vnode的Destroy Hook函数
+          listeners = cbs.remove.length + 1  // 获取cbs中remove函数个数，该listeners变量是为了防止重复删除dom元素
           rm = createRmCb(ch.elm!, listeners)
           for (let i = 0; i < cbs.remove.length; ++i) cbs.remove[i](ch, rm)
           const removeHook = ch?.data?.hook?.remove
@@ -226,6 +234,7 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
             rm()
           }
         } else { // Text node
+          // 文本节点删除操作
           api.removeChild(parentElm, ch.elm!)
         }
       }
