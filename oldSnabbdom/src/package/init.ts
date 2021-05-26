@@ -173,6 +173,15 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
     return vnode.elm
   }
 
+  /**
+   * 
+   * @param parentElm 父元素
+   * @param before 参考节点，vnode对应元素插入在它之前
+   * @param vnodes array，要添加的节点
+   * @param startIdx vnodes数组开始位置
+   * @param endIdx vnodes数组结束位置，可决定要把哪些节点插入到parentElm中
+   * @param insertedVnodeQueue 存储插入的具有insert钩子函数的节点
+   */
   function addVnodes (
     parentElm: Node,
     before: Node | null,
@@ -184,6 +193,7 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
     for (; startIdx <= endIdx; ++startIdx) {
       const ch = vnodes[startIdx]
       if (ch != null) {
+        // 调用insertBefore方法插入元素，用createElm方法转换成dom元素，插入到真实dom中
         api.insertBefore(parentElm, createElm(ch, insertedVnodeQueue), before)
       }
     }
@@ -224,12 +234,15 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         if (isDef(ch.sel)) {
           // 元素节点删除操作
           invokeDestroyHook(ch) // 触发vnode的Destroy Hook函数
-          listeners = cbs.remove.length + 1  // 获取cbs中remove函数个数，该listeners变量是为了防止重复删除dom元素
-          rm = createRmCb(ch.elm!, listeners)
+          listeners = cbs.remove.length + 1  // 获取cbs中remove函数个数，该listeners变量是为了防止重复删除dom元素（我觉得是保证所有remove钩子函数得到执行）
+          rm = createRmCb(ch.elm!, listeners) // 真正返回删除dom元素的函数，同时内部做了一个判断
+          // 当listeners 减为0，也就是所有remove钩子函数执行完毕时，才会执行删除元素的操作
           for (let i = 0; i < cbs.remove.length; ++i) cbs.remove[i](ch, rm)
+
+          // 处理用户传入的remove钩子函数
           const removeHook = ch?.data?.hook?.remove
           if (isDef(removeHook)) {
-            removeHook(ch, rm)
+            removeHook(ch, rm) // 传入了vnode和rm，用户需要手动执行rm
           } else {
             rm()
           }
