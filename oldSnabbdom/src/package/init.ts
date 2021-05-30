@@ -254,6 +254,13 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
     }
   }
 
+  /**
+   * 对比新旧vnode中的所有子节点，并更新DOM
+   * @param parentElm 父元素，会在这里进行插入或移除元素的操作
+   * @param oldCh 旧节点的子节点
+   * @param newCh 新节点的子节点
+   * @param insertedVnodeQueue 调用addVNodes时传入的队列
+   */
   function updateChildren (parentElm: Node,
     oldCh: VNode[],
     newCh: VNode[],
@@ -270,7 +277,7 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
     let idxInOld: number
     let elmToMove: VNode
     let before: any
-
+    // 同级别节点的比较
     while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
       if (oldStartVnode == null) {
         oldStartVnode = oldCh[++oldStartIdx] // Vnode might have been moved left
@@ -318,6 +325,7 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         newStartVnode = newCh[++newStartIdx]
       }
     }
+    // 循环结束的收尾工作
     if (oldStartIdx <= oldEndIdx || newStartIdx <= newEndIdx) {
       if (oldStartIdx > oldEndIdx) {
         before = newCh[newEndIdx + 1] == null ? null : newCh[newEndIdx + 1].elm
@@ -329,33 +337,53 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
   }
 
   function patchVnode (oldVnode: VNode, vnode: VNode, insertedVnodeQueue: VNodeQueue) {
+    // 第一个过程：触发 prepatch 和 update 钩子函数
     const hook = vnode.data?.hook
-    hook?.prepatch?.(oldVnode, vnode)
-    const elm = vnode.elm = oldVnode.elm!
-    const oldCh = oldVnode.children as VNode[]
+    hook?.prepatch?.(oldVnode, vnode) // 获取用户传入的 prepatch 钩子函数，并立即执行。它是在对比两新旧节点之前执行的
+    const elm = vnode.elm = oldVnode.elm! // 把旧节点的elm属性赋值给新节点
+    // 分别获取修旧节点的子节点
+    const oldCh = oldVnode.children as VNode[] 
     const ch = vnode.children as VNode[]
-    if (oldVnode === vnode) return
-    if (vnode.data !== undefined) {
+    if (oldVnode === vnode) return // 判断是否是相同节点，如果相同则不需比较
+    if (vnode.data !== undefined) { // todo 难道没有data 就不执行模块自带的update钩子函数了吗？
+      // 获取 update 钩子函数依次执行
       for (let i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
+      // 后执行用户传入的 update 钩子函数，是因为用户修改 vnode 的数据可以覆盖模块 update 钩子的数据
       vnode.data.hook?.update?.(oldVnode, vnode)
     }
+
+    // 第二个过程：真正对比新旧 vnode 差异的地方 
     if (isUndef(vnode.text)) {
+      // 判断是否都有子节点
       if (isDef(oldCh) && isDef(ch)) {
+        // 都有子节点则调用 updateChildren 函数，它会对比新旧vnode中的所有子节点，并更新DOM
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue)
       } else if (isDef(ch)) {
-        if (isDef(oldVnode.text)) api.setTextContent(elm, '')
-        addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
+        // 新vnode有子节点，则判断老节点是否有text属性
+        if (isDef(oldVnode.text)) api.setTextContent(elm, '') // 如果有，则直接清空文本内容
+        addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue) // 并将新 vnode 的子节点插入到 elm 属性中
       } else if (isDef(oldCh)) {
+        // 如果老vnode有子节点，则直接从DOM树上移除
         removeVnodes(elm, oldCh, 0, oldCh.length - 1)
       } else if (isDef(oldVnode.text)) {
+        // 如果老节点有 text 属性，则直接清空文本内容
         api.setTextContent(elm, '')
       }
-    } else if (oldVnode.text !== vnode.text) {
+    
+    } 
+    // 判断修旧节点text属性是否相等，如果相等则不作操作
+    else if (oldVnode.text !== vnode.text) {
+      // 新旧节点 text 属性不相等，判断老节点是否有子节点
       if (isDef(oldCh)) {
+        // 如果老节点有子节点，则直接删除，因为此时的新节点只有 text 文本属性
         removeVnodes(elm, oldCh, 0, oldCh.length - 1)
       }
-      api.setTextContent(elm, vnode.text!)
+
+      // 直接更新 vnode 的 text 值到对应的 elm 元素上
+      api.setTextContent(elm, vnode.text!);
     }
+
+    // 第三个过程：触发 postpatch 钩子函数
     hook?.postpatch?.(oldVnode, vnode)
   }
 
