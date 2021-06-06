@@ -40,6 +40,7 @@ class Vue {
 
     // 增加set方法，使用户能将额外属性自定义转化为响应式数据
     _set = (target, key, value) => {
+        console.log(target, "target");
         // 判断target是否为null、undefined，是否为string、number、symbol、boolean中的一种
         if (this.isUndef(target) || this.isPrimitive(target)
         ) {
