@@ -306,31 +306,43 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         oldEndVnode = oldCh[--oldEndIdx]
         newStartVnode = newCh[++newStartIdx]
       } else {
+        // 如果没有匹配到，说明开始和结束节点都不相同。这时候则会来旧节点数组中依次查找是否有相同的新节点
         if (oldKeyToIdx === undefined) {
+          // 这里会创建一个map对象，键是老节点的key，值是老节点的index，方便根据新节点的key，找到老节点数组中对应的索引。
           oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
         }
+        // 在老节点中寻找索引
         idxInOld = oldKeyToIdx[newStartVnode.key as string]
         if (isUndef(idxInOld)) { // New element
+          // 找不到老节点对应key，说明是个新节点，那么此时要创建新的DOM元素，并把它插入到最前面的位置来。
           api.insertBefore(parentElm, createElm(newStartVnode, insertedVnodeQueue), oldStartVnode.elm!)
         } else {
+          // 如果找到了，则取出对应的老节点
           elmToMove = oldCh[idxInOld]
           if (elmToMove.sel !== newStartVnode.sel) {
+            // 如果sel属性不同说明新元素有改动，也同样需要创建一个新的，插入到老节点之前
             api.insertBefore(parentElm, createElm(newStartVnode, insertedVnodeQueue), oldStartVnode.elm!)
           } else {
+            // 如果相同，则直接对比新旧节点区别
             patchVnode(elmToMove, newStartVnode, insertedVnodeQueue)
+            // 比对完，则置空对应的老节点索引，说明它已被处理完
             oldCh[idxInOld] = undefined as any
+            // 然后插入到老开始节点前面来
             api.insertBefore(parentElm, elmToMove.elm!, oldStartVnode.elm!)
           }
         }
         newStartVnode = newCh[++newStartIdx]
       }
     }
-    // 循环结束的收尾工作
+    // 循环结束的收尾工作。如果有一个数组没有被遍历完，说明有剩余的元素
     if (oldStartIdx <= oldEndIdx || newStartIdx <= newEndIdx) {
       if (oldStartIdx > oldEndIdx) {
+        // 老节点数组遍历完，新节点数组有剩余
         before = newCh[newEndIdx + 1] == null ? null : newCh[newEndIdx + 1].elm
+        // 将剩余节点批量添加至末尾
         addVnodes(parentElm, before, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)
       } else {
+        // 新节点数组遍历完，老节点数组有剩余
         removeVnodes(parentElm, oldCh, oldStartIdx, oldEndIdx)
       }
     }
