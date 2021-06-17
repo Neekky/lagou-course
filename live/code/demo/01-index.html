@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <div v-if="isShow()">xxxx {{ show }}</div>
+    <button @click="change">按钮</button>
+  </div>
+  <script src="./vue.js"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        show: false
+      },
+      methods: {
+        change () {
+          this.show = !this.show
+        },
+        isShow () {
+          return this.show
+        }
+      }
+    })
+  </script>
+</body>
+</html>

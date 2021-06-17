@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    function fn1 (a, b, c) {
+      console.log(1)
+    }
+    function fn2 () {
+      console.log(this)
+      console.log(2)
+    }
+
+    // fn2.call(1)
+    // fn1.call(fn2)       
+    // fn1.call.call(fn2)
+
+    // fn1()
+
+    // // obj.fn1()
+    // // fn1.call(o, 1, 2, 3)
+    // // fn1.call(null/undefined)  --> fn1 内部this 指向的是 window
+    Function.prototype.mycall = function mycall(context, ...args) {
+      if (typeof context === 'number') {
+        context = new Number(context)
+      }
+      // this 指向谁？最终我们call中要执行的函数
+      // 改变 this 这个函数内部的 this 指向
+      // context.fn1()
+      context = context ?? window // context || window
+      context.fnxxx = this
+      const r = context.fnxxx(...args)
+      delete context.fnxxx
+      return r
+    }
+
+    fn2.mycall(1)
+
+    // // fn1.mycall(obj)
+
+    // fn1.mycall.mycall(fn2)
+
+
+    // fn1.call(obj)    --->  obj.fn1()
+
+    // (fn1.call).call(fn2)
+
+  </script>
+</body>
+</html>
