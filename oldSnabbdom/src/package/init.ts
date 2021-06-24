@@ -314,7 +314,7 @@ export function init (modules: Array<Partial<Module>>, domApi?: DOMAPI) {
         // 在老节点中寻找索引
         idxInOld = oldKeyToIdx[newStartVnode.key as string]
         if (isUndef(idxInOld)) { // New element
-          // 找不到老节点对应key，说明是个新节点，那么此时要创建新的DOM元素，并把它插入到最前面的位置来。
+          // 找不到老节点对应key，说明是个新节点，那么此时要创建新的DOM元素，并把它插入到当前旧开始节点的前面位置来。
           api.insertBefore(parentElm, createElm(newStartVnode, insertedVnodeQueue), oldStartVnode.elm!)
         } else {
           // 如果找到了，则取出对应的老节点
