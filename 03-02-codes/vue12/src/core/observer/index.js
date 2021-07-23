@@ -51,12 +51,16 @@ export class Observer {
     def(value, '__ob__', this)
     // 数组的响应式处理
     if (Array.isArray(value)) {
+
+      // 是否支持__proto__属性，处理兼容性
       if (hasProto) {
         protoAugment(value, arrayMethods)
       } else {
+        // 直接将方法定义在数组对象上
         copyAugment(value, arrayMethods, arrayKeys)
       }
-      // 为数组中的每一个对象创建一个 observer 实例
+
+      // 为数组中的每一个对象创建一个 observer 实例，方法内部会判断成员是否是对象
       this.observeArray(value)
     } else {
       // 遍历对象中的每一个属性，转换成 setter/getter
