@@ -4423,6 +4423,7 @@
         watcher.before();
       }
       id = watcher.id;
+      // 将该ID置为null，方便下次运行
       has[id] = null;
       watcher.run();
       // in dev build, check and stop circular updates.
@@ -4671,6 +4672,7 @@
   Watcher.prototype.update = function update () {
     // 渲染watcher lazy、sync都为false
     /* istanbul ignore else */
+    console.log(this.lazy, this.sync);
     if (this.lazy) {
       this.dirty = true;
     } else if (this.sync) {
@@ -4687,7 +4689,9 @@
    */
   Watcher.prototype.run = function run () {
     if (this.active) {
+      // 对于渲染watcher，返回的是undefined。这里主要是针对
       var value = this.get();
+
       if (
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even
@@ -4699,6 +4703,7 @@
         // set new value
         var oldValue = this.value;
         this.value = value;
+        // 如果是用户watcher，会套一层try catch
         if (this.user) {
           try {
             this.cb.call(this.vm, value, oldValue);
@@ -4706,6 +4711,7 @@
             handleError(e, this.vm, ("callback for watcher \"" + (this.expression) + "\""));
           }
         } else {
+          // 渲染watcher是一个noop
           this.cb.call(this.vm, value, oldValue);
         }
       }

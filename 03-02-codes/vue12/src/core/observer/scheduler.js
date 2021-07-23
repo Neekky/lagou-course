@@ -98,6 +98,7 @@ function flushSchedulerQueue () {
       watcher.before()
     }
     id = watcher.id
+    // 将该ID置为null，方便下次运行
     has[id] = null
     watcher.run()
     // in dev build, check and stop circular updates.

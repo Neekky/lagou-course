@@ -177,6 +177,7 @@ export default class Watcher {
   update () {
     // 渲染watcher lazy、sync都为false
     /* istanbul ignore else */
+    console.log(this.lazy, this.sync);
     if (this.lazy) {
       this.dirty = true
     } else if (this.sync) {
@@ -193,7 +194,9 @@ export default class Watcher {
    */
   run () {
     if (this.active) {
-      const value = this.get()
+      // 对于渲染watcher，返回的是undefined。这里主要是针对
+      const value = this.get();
+
       if (
         value !== this.value ||
         // Deep watchers and watchers on Object/Arrays should fire even
@@ -205,6 +208,7 @@ export default class Watcher {
         // set new value
         const oldValue = this.value
         this.value = value
+        // 如果是用户watcher，会套一层try catch
         if (this.user) {
           try {
             this.cb.call(this.vm, value, oldValue)
@@ -212,6 +216,7 @@ export default class Watcher {
             handleError(e, this.vm, `callback for watcher "${this.expression}"`)
           }
         } else {
+          // 渲染watcher是一个noop
           this.cb.call(this.vm, value, oldValue)
         }
       }
