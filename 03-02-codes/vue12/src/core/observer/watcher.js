@@ -53,6 +53,8 @@ export default class Watcher {
     if (isRenderWatcher) {
       vm._watcher = this
     }
+
+    // 这里存储所有的watcher：Computed Watcher、用户Watcher（侦听器）、渲染Watcher
     vm._watchers.push(this)
     // options
     if (options) {
@@ -60,6 +62,8 @@ export default class Watcher {
       this.user = !!options.user
       this.lazy = !!options.lazy
       this.sync = !!options.sync
+
+      // 渲染watcher只有一个before
       this.before = options.before
     } else {
       this.deep = this.user = this.lazy = this.sync = false
@@ -77,6 +81,7 @@ export default class Watcher {
       : ''
     // parse expression for getter
     if (typeof expOrFn === 'function') {
+      // 如果是函数则直接记录给getter
       this.getter = expOrFn
     } else {
       // expOrFn 是字符串的时候，例如 watch: { 'person.name': function... }
@@ -115,11 +120,17 @@ export default class Watcher {
     } finally {
       // "touch" every property so they are all tracked as
       // dependencies for deep watching
+
+      // 执行清理工作
       if (this.deep) {
         traverse(value)
       }
-      popTarget()
-      this.cleanupDeps()
+
+      // 当前watcher执行完毕，从栈里弹出
+      popTarget();
+
+      // 会将Watcher从Dep的Subs数组中移除，并且会将watcher中记录的deps移除
+      this.cleanupDeps();
     }
     return value
   }
@@ -164,12 +175,14 @@ export default class Watcher {
    * Will be called when a dependency changes.
    */
   update () {
+    // 渲染watcher lazy、sync都为false
     /* istanbul ignore else */
     if (this.lazy) {
       this.dirty = true
     } else if (this.sync) {
       this.run()
     } else {
+      // 渲染watcher会执行这个
       queueWatcher(this)
     }
   }

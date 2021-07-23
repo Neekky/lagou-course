@@ -81,10 +81,17 @@ function flushSchedulerQueue () {
   //    user watchers are created before the render watcher)
   // 3. If a component is destroyed during a parent component's watcher run,
   //    its watchers can be skipped.
+  
+  // 1.组件更新顺序保证为父组件到子组件，因为先创建父组件再创建子组件
+  // 2.组件的用户watcher要在渲染watcher之前进行，因为用户watcher是在渲染watcher之前被创建的。
+  // 用户watcher、计算属性watcher是在initState中创建的，在mountComponent中创建的渲染watcher。
+  // 3.如果一个组件在父组件运行期间被销毁，则跳过该watcher
+  // queue是按从小到大来排序的
   queue.sort((a, b) => a.id - b.id)
 
   // do not cache length because more watchers might be pushed
   // as we run existing watchers
+
   for (index = 0; index < queue.length; index++) {
     watcher = queue[index]
     if (watcher.before) {
@@ -163,22 +170,28 @@ function callActivatedHooks (queue) {
  */
 export function queueWatcher (watcher: Watcher) {
   const id = watcher.id
+  // 该判断是防止Watcher被重复处理
   if (has[id] == null) {
     has[id] = true
+    // 判断queue队列是否正在被处理，queue队列存放的就是watcher
     if (!flushing) {
+      // watcher直接入栈
       queue.push(watcher)
     } else {
       // if already flushing, splice the watcher based on its id
       // if already past its id, it will be run next immediately.
       let i = queue.length - 1
+      // 获取数组长度
       while (i > index && queue[i].id > watcher.id) {
         i--
       }
       queue.splice(i + 1, 0, watcher)
     }
+    // waiting为false，说明队列没被执行
     // queue the flush
     if (!waiting) {
       waiting = true
+      console.log(...queue, "队列");
 
       if (process.env.NODE_ENV !== 'production' && !config.async) {
         flushSchedulerQueue()
