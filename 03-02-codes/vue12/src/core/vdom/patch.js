@@ -622,6 +622,7 @@ export function createPatchFunction (backend) {
       nodeOps.setTextContent(elm, vnode.text)
     }
     if (isDef(data)) {
+      // 如果有用户定义的data，则判断执行对应钩子函数
       if (isDef(i = data.hook) && isDef(i = i.postpatch)) i(oldVnode, vnode)
     }
   }
