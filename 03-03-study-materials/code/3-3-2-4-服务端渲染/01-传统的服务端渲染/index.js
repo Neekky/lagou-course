@@ -5,7 +5,7 @@ const template = require('art-template')
 const app = express()
 
 app.get('/', (req, res) => {
-  // 1. 获取页面模板
+  // 1. 获取页面模板 `
   const templateStr = fs.readFileSync('./index.html', 'utf-8')
 
   // 2. 获取数据
