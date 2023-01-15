@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <h2>{{ title }}</h2>
+    {{ testStr }}
     <ul>
       <li
         v-for="item in posts"
@@ -29,13 +30,12 @@ export default {
     //   title: data.title,
     //   posts: data.posts
     // }
+  },
+  data () {
+    return {
+      testStr: '测试一下'
+    }
   }
-  // data () {
-  //   return {
-  //     title: '',
-  //     posts: []
-  //   }
-  // },
   // async created () {
   //   const { data } = await axios({
   //     method: 'GET',

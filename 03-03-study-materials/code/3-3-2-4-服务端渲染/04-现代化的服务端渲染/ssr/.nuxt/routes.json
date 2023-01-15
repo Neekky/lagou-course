@@ -1,0 +1,16 @@
+[
+  {
+    "name": "about",
+    "path": "/about",
+    "component": "/Users/cengchao/Study/lagou-course/03-03-study-materials/code/3-3-2-4-服务端渲染/04-现代化的服务端渲染/ssr/pages/about.vue",
+    "chunkName": "pages/about",
+    "_name": "_b40d3c04"
+  },
+  {
+    "name": "index",
+    "path": "/",
+    "component": "/Users/cengchao/Study/lagou-course/03-03-study-materials/code/3-3-2-4-服务端渲染/04-现代化的服务端渲染/ssr/pages/index.vue",
+    "chunkName": "pages/index",
+    "_name": "_749d867a"
+  }
+]

@@ -1,5 +1,5 @@
-import { stringify } from 'querystring'
 import Vue from 'vue'
+import { joinURL, normalizeURL, withQuery } from 'ufo'
 import fetch from 'node-fetch'
 import middleware from './middleware.js'
 import {
@@ -22,38 +22,50 @@ if (!Vue.__nuxt__fetch__mixin__) {
   Vue.__nuxt__fetch__mixin__ = true
 }
 
+if (!Vue.__original_use__) {
+  Vue.__original_use__ = Vue.use
+  Vue.__install_times__ = 0
+  Vue.use = function (plugin, ...args) {
+    plugin.__nuxt_external_installed__ = Vue._installedPlugins.includes(plugin)
+    return Vue.__original_use__(plugin, ...args)
+  }
+}
+if (Vue.__install_times__ === 2) {
+  Vue.__install_times__ = 0
+  Vue._installedPlugins = Vue._installedPlugins.filter(plugin => {
+    return plugin.__nuxt_external_installed__ === true
+  })
+}
+Vue.__install_times__++
+
 // Component: <NuxtLink>
 Vue.component(NuxtLink.name, NuxtLink)
 Vue.component('NLink', NuxtLink)
 
 if (!global.fetch) { global.fetch = fetch }
 
-const noopApp = () => new Vue({ render: h => h('div') })
-
-function urlJoin () {
-  return Array.prototype.slice.call(arguments).join('/').replace(/\/+/g, '/')
-}
+const noopApp = () => new Vue({ render: h => h('div', { domProps: { id: '__nuxt' } }) })
 
 const createNext = ssrContext => (opts) => {
+  // If static target, render on client-side
   ssrContext.redirected = opts
-  // If nuxt generate
-  if (!ssrContext.res) {
+  if (ssrContext.target === 'static' || !ssrContext.res) {
     ssrContext.nuxt.serverRendered = false
     return
   }
-  opts.query = stringify(opts.query)
-  opts.path = opts.path + (opts.query ? '?' + opts.query : '')
-  const routerBase = '/'
-  if (!opts.path.startsWith('http') && (routerBase !== '/' && !opts.path.startsWith(routerBase))) {
-    opts.path = urlJoin(routerBase, opts.path)
+  let fullPath = withQuery(opts.path, opts.query)
+  const $config = ssrContext.runtimeConfig || {}
+  const routerBase = ($config._app && $config._app.basePath) || '/'
+  if (!fullPath.startsWith('http') && (routerBase !== '/' && !fullPath.startsWith(routerBase))) {
+    fullPath = joinURL(routerBase, fullPath)
   }
   // Avoid loop redirect
-  if (opts.path === ssrContext.url) {
+  if (decodeURI(fullPath) === decodeURI(ssrContext.url)) {
     ssrContext.redirected = false
     return
   }
   ssrContext.res.writeHead(opts.status, {
-    Location: opts.path
+    Location: normalizeURL(fullPath)
   })
   ssrContext.res.end()
 }
@@ -69,10 +81,20 @@ export default async (ssrContext) => {
   ssrContext.next = createNext(ssrContext)
   // Used for beforeNuxtRender({ Components, nuxtState })
   ssrContext.beforeRenderFns = []
-  // Nuxt object (window{{globals.context}}, defaults to window.__NUXT__)
-  ssrContext.nuxt = { layout: 'default', data: [], fetch: [], error: null, serverRendered: true, routePath: '' }
+  // Nuxt object (window.{{globals.context}}, defaults to window.__NUXT__)
+  ssrContext.nuxt = { layout: 'default', data: [], fetch: {}, error: null, serverRendered: true, routePath: '' }
+
+    ssrContext.fetchCounters = {}
+
+  // Remove query from url is static target
+
+  // Public runtime config
+  ssrContext.nuxt.config = ssrContext.runtimeConfig.public
+  if (ssrContext.nuxt.config._app) {
+    __webpack_public_path__ = joinURL(ssrContext.nuxt.config._app.cdnURL, ssrContext.nuxt.config._app.assetsPath)
+  }
   // Create the app definition and the instance (created for each request)
-  const { app, router } = await createApp(ssrContext)
+  const { app, router } = await createApp(ssrContext, ssrContext.runtimeConfig.private)
   const _app = new Vue(app)
   // Add ssr route path to nuxt context so we can account for page navigation between ssr and csr
   ssrContext.nuxt.routePath = app.context.route.path
@@ -89,6 +111,11 @@ export default async (ssrContext) => {
   }
 
   const renderErrorPage = async () => {
+    // Don't server-render the page in static target
+    if (ssrContext.target === 'static') {
+      ssrContext.nuxt.serverRendered = false
+    }
+
     // Load layout for error page
     const layout = (NuxtError.options || NuxtError).layout
     const errLayout = typeof layout === 'function' ? layout.call(NuxtError, app.context) : layout
@@ -107,7 +134,7 @@ export default async (ssrContext) => {
   const s = Date.now()
 
   // Components are already resolved by setContext -> getRouteData (app/utils.js)
-  const Components = getMatchedComponents(router.match(ssrContext.url))
+  const Components = getMatchedComponents(app.context.route)
 
   /*
   ** Call global middleware (nuxt.config.js)
@@ -205,10 +232,6 @@ export default async (ssrContext) => {
 
   // ...If .validate() returned false
   if (!isValid) {
-    // Don't server-render the page in generate mode
-    if (ssrContext._generate) {
-      ssrContext.nuxt.serverRendered = false
-    }
     // Render a 404 error page
     return render404Page()
   }
